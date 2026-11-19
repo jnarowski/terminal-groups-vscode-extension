@@ -25,13 +25,13 @@ pnpm run install-local   # packages a .vsix and installs it into Cursor
 
 For VS Code, run `pnpm run package` and then `code --install-extension terminal-groups.vsix --force`. Reload the window after installing.
 
-Recommended workspace settings:
+Recommended setting, in your user or workspace settings:
 
 ```jsonc
-"terminal.integrated.tabs.enabled": false,     // the tree replaces the built-in tab list
-"workbench.tree.indent": 0,                    // child rows line up under the folder icon
-"workbench.tree.renderIndentGuides": "none"
+"terminal.integrated.tabs.enabled": false   // the tree replaces the built-in tab list
 ```
+
+Terminals sit one `workbench.tree.indent` step (default 8px) right of their folder icon. That setting is shared by every tree in the editor, so the extension leaves it alone.
 
 On first launch the view moves itself into the Terminal panel. If it doesn't, drag the "Terminal Groups" tab onto the Terminal tab.
 
