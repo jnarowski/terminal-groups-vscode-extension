@@ -1,6 +1,32 @@
 # Terminal Groups
 
-A VS Code / Cursor extension that lists your terminals grouped by workspace folder, in a tree that sits next to the terminal panel. Built for multi-root workspaces with a lot of terminals open.
+A VS Code / Cursor extension that lists your terminals grouped by workspace folder, in a tree that sits next to the terminal panel. Built for multi-root workspaces with a lot of terminals open. With an optional Claude Code hook, it also shows which Claude sessions are waiting on you.
+
+## Why
+
+- A multi-root workspace with dev servers, shells, and a few Claude sessions per repo turns the built-in terminal list into 15+ flat rows. Here each repo gets its own folder.
+- When several Claude sessions run in parallel, you can't tell which one finished or is stuck on a permission prompt without clicking through each. Here they turn yellow until you look at them, and the view badge counts them.
+- Nothing to migrate. Your `tasks.json` keeps launching terminals as before, and their icons and colors carry over.
+
+Skip it if you usually have only a few terminals open. The built-in list is fine for that.
+
+## Quick start
+
+Requires Node and pnpm.
+
+```sh
+git clone https://github.com/jnarowski/terminal-groups-vscode-extension.git
+cd terminal-groups-vscode-extension
+pnpm run install-local   # packages a .vsix and installs it into Cursor
+```
+
+Reload the window. The Terminals tree appears next to the terminal panel. Then hide the built-in tab list so you don't see both, in your user or workspace settings:
+
+```jsonc
+"terminal.integrated.tabs.enabled": false
+```
+
+For the Claude highlighting, add the hook (see [Claude Code attention](#claude-code-attention-optional-experimental)).
 
 ## Features
 
@@ -15,21 +41,9 @@ A VS Code / Cursor extension that lists your terminals grouped by workspace fold
 - Task exit markers (check or error) when a task's process ends.
 - Optional: Claude Code sessions that finish or need permission get highlighted until you look at them (see below).
 
-## Install
+## Install notes
 
-Requires Node and pnpm.
-
-```sh
-pnpm run install-local   # packages a .vsix and installs it into Cursor
-```
-
-For VS Code, run `pnpm run package` and then `code --install-extension terminal-groups.vsix --force`. Reload the window after installing.
-
-Recommended setting, in your user or workspace settings:
-
-```jsonc
-"terminal.integrated.tabs.enabled": false   // the tree replaces the built-in tab list
-```
+For VS Code instead of Cursor, run `pnpm run package` and then `code --install-extension terminal-groups.vsix --force`. To update, `git pull` and run the install command again, then reload.
 
 Terminals sit one `workbench.tree.indent` step (default 8px) right of their folder icon. That setting is shared by every tree in the editor, so the extension leaves it alone.
 
@@ -38,6 +52,22 @@ On first launch the view moves itself into the Terminal panel. If it doesn't, dr
 ## Claude Code attention (optional, experimental)
 
 The extension works without this. With it, a Claude session shows a spinner while working. When it finishes or asks for permission while you're on another terminal, the row and its folder turn yellow, a bell appears, and the view badge counts it. Viewing the terminal clears it.
+
+### How it works
+
+```mermaid
+flowchart LR
+  A["Claude Code session<br/>(in a terminal)"] -- "prompt, tool use, stop,<br/>notification, session end" --> B["hooks/claude-state.sh"]
+  B -- "state + process ancestry" --> C["~/.cache/terminal-groups/claude/SESSION_ID.json"]
+  C -- "polled every 2s" --> D["Terminal Groups extension"]
+  D -- "match ancestry to the<br/>terminal's shell PID" --> E["Row: spinner, or yellow + bell<br/>View badge: unread count"]
+```
+
+- Claude Code runs the hook on each event. The hook records `working` or `needs` plus the chain of parent process IDs, which leads back to the terminal's shell.
+- The extension reads those files and marks the matching terminal. A `needs` state stays unread until you view that terminal. If you're already looking at it when Claude finishes, it never shows as unread.
+- Files from sessions whose Claude process has exited are ignored, so nothing goes stale.
+
+### Setup
 
 Add these entries to the `hooks` object in `~/.claude/settings.json`, pointing at your clone. They coexist with hooks you already have: Claude Code runs every entry in an event's list, and this script always exits 0 without printing, so it never blocks or changes anything.
 
