@@ -39,7 +39,18 @@ On first launch the view moves itself into the Terminal panel. If it doesn't, dr
 
 The extension works without this. With it, a Claude session shows a spinner while working. When it finishes or asks for permission while you're on another terminal, the row and its folder turn yellow, a bell appears, and the view badge counts it. Viewing the terminal clears it.
 
-Add these hooks to `~/.claude/settings.json`, pointing at your clone:
+Add these entries to the `hooks` object in `~/.claude/settings.json`, pointing at your clone. They coexist with hooks you already have: Claude Code runs every entry in an event's list, and this script always exits 0 without printing, so it never blocks or changes anything.
+
+If you don't have a `hooks` object yet, use this as is. If you do, don't paste over it. Add each entry to the matching event's list, or add the event if it's missing. For example, an existing `Stop` hook becomes:
+
+```json
+"Stop": [
+  { "hooks": [{ "type": "command", "command": "your-existing-stop-hook.sh" }] },
+  { "hooks": [{ "type": "command", "command": "sh /path/to/terminal-groups/hooks/claude-state.sh needs", "timeout": 5 }] }
+]
+```
+
+The full set:
 
 ```json
 "hooks": {
