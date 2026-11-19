@@ -45,10 +45,18 @@
       { "command": "terminalGroups.moveToEditor", "title": "Move into Editor Area" },
       { "command": "terminalGroups.split", "title": "Split Terminal" },
       { "command": "terminalGroups.newInFolder", "title": "New Terminal Here", "icon": "$(add)" },
-      { "command": "terminalGroups.expandAll", "title": "Expand All", "icon": "$(expand-all)" }
+      { "command": "terminalGroups.expandAll", "title": "Expand All", "icon": "$(expand-all)" },
+      { "command": "terminalGroups.find", "title": "Terminal Groups: Find Terminal", "icon": "$(search)" },
+      { "command": "terminalGroups.sortFolders", "title": "Sort Folders...", "icon": "$(list-ordered)" },
+      { "command": "terminalGroups.filter", "title": "Filter Terminals...", "icon": "$(filter)" },
+      { "command": "terminalGroups.filterActive", "title": "Filter Terminals...", "icon": "$(filter-filled)" }
     ],
     "menus": {
       "view/title": [
+        { "command": "terminalGroups.sortFolders", "when": "view == terminalGroups.tree", "group": "1_sort@1" },
+        { "command": "terminalGroups.filter", "when": "view == terminalGroups.tree && !terminalGroups.filtered", "group": "navigation@0" },
+        { "command": "terminalGroups.filterActive", "when": "view == terminalGroups.tree && terminalGroups.filtered", "group": "navigation@0" },
+        { "command": "terminalGroups.find", "when": "view == terminalGroups.tree", "group": "navigation@0" },
         { "command": "terminalGroups.expandAll", "when": "view == terminalGroups.tree", "group": "navigation@1" }
       ],
       "view/item/context": [
@@ -70,7 +78,8 @@
         { "command": "terminalGroups.changeIcon", "when": "false" },
         { "command": "terminalGroups.moveToEditor", "when": "false" },
         { "command": "terminalGroups.split", "when": "false" },
-        { "command": "terminalGroups.newInFolder", "when": "false" }
+        { "command": "terminalGroups.newInFolder", "when": "false" },
+        { "command": "terminalGroups.filterActive", "when": "false" }
       ]
     }
   }

@@ -60,4 +60,29 @@ function reorder(current, moving, beforeKey) {
   return rest;
 }
 
-module.exports = { classify, applyOrder, reorder };
+/**
+ * Claude Code state for a terminal: the newest state file whose process ancestry includes
+ * the terminal's shell PID. States come from the optional hooks/claude-state.sh hook.
+ * @param {{state: string, pids: number[], ts: number}[]} states
+ * @param {number | undefined} terminalPid
+ * @returns {{state: string, ts: number} | undefined} state is 'working' | 'needs'; ts in seconds
+ */
+function claudeEntryFor(states, terminalPid) {
+  if (!terminalPid) return undefined;
+  let best;
+  for (const s of states) {
+    if (Array.isArray(s.pids) && s.pids.includes(terminalPid) && (!best || s.ts > best.ts)) best = s;
+  }
+  return best;
+}
+
+const claudeStateFor = (states, pid) => (claudeEntryFor(states, pid) || {}).state;
+
+/**
+ * Unread = Claude needs you and you haven't viewed the terminal since that state was written.
+ * @param {{state: string, ts: number} | undefined} entry
+ * @param {number | undefined} seenMs when the terminal was last viewed (ms)
+ */
+const isUnread = (entry, seenMs) => !!entry && entry.state === 'needs' && entry.ts * 1000 > (seenMs || 0);
+
+module.exports = { classify, applyOrder, reorder, claudeEntryFor, claudeStateFor, isUnread };
