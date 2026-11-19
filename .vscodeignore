@@ -1,3 +1,5 @@
 **/*.test.js
 .gitignore
 *.vsix
+AGENTS.md
+hooks/**
