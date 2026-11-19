@@ -64,6 +64,16 @@ The full set:
 
 The hook writes one small JSON file per session to `~/.cache/terminal-groups/claude/`. The extension matches it to a terminal by process ancestry. To turn it off, remove the hooks. Already-running sessions may need a restart to pick them up.
 
+## Troubleshooting
+
+**The built-in terminal tab list still shows next to the tree.** Set `"terminal.integrated.tabs.enabled": false`. Where it goes depends on how the project is opened:
+
+- Single folder: the repo's `.vscode/settings.json`.
+- Multi-root `.code-workspace`: the `"settings"` block of that file. A folder's `.vscode/settings.json` won't apply to the whole window here.
+- Every project, or a team-shared workspace file you don't want to change: your user settings (⌘⇧P, "Preferences: Open User Settings (JSON)"). Workspace settings beat user settings, so this only works if the workspace file doesn't set it. If it does, make a personal copy of the workspace file, list it in `.git/info/exclude`, and open that instead.
+
+**The tree shows up as its own panel tab.** It moves next to the terminal once, on first launch. In other workspaces, drag the "Terminal Groups" tab onto the Terminal tab and the editor remembers it.
+
 ## Limits
 
 - Tree rows can't be bolded or resized, and the gray text after a label can't be colored. Those are VS Code API limits.
