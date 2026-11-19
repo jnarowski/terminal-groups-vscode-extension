@@ -72,6 +72,13 @@ The hook writes one small JSON file per session to `~/.cache/terminal-groups/cla
 - Multi-root `.code-workspace`: the `"settings"` block of that file. A folder's `.vscode/settings.json` won't apply to the whole window here.
 - Every project, or a team-shared workspace file you don't want to change: your user settings (⌘⇧P, "Preferences: Open User Settings (JSON)"). Workspace settings beat user settings, so this only works if the workspace file doesn't set it. If it does, make a personal copy of the workspace file, list it in `.git/info/exclude`, and open that instead.
 
+**Turning the built-in tab list back on.** Set `"terminal.integrated.tabs.enabled": true`, or delete the line, everywhere it's set to `false`. Check both places, because a workspace value beats the user value:
+
+- User settings (⌘⇧P, "Preferences: Open User Settings (JSON)"). On macOS, Cursor keeps them in `~/Library/Application Support/Cursor/User/settings.json`.
+- The workspace: the `.code-workspace` file's `"settings"` block, or `.vscode/settings.json` for a single folder.
+
+It applies right away, with no reload. The Terminal Groups tree keeps working alongside it.
+
 **The tree shows up as its own panel tab.** It moves next to the terminal once, on first launch. In other workspaces, drag the "Terminal Groups" tab onto the Terminal tab and the editor remembers it.
 
 ## Limits
