@@ -76,8 +76,6 @@ function claudeEntryFor(states, terminalPid) {
   return best;
 }
 
-const claudeStateFor = (states, pid) => (claudeEntryFor(states, pid) || {}).state;
-
 /**
  * Unread = Claude needs you and you haven't viewed the terminal since that state was written.
  * @param {{state: string, ts: number} | undefined} entry
@@ -85,4 +83,4 @@ const claudeStateFor = (states, pid) => (claudeEntryFor(states, pid) || {}).stat
  */
 const isUnread = (entry, seenMs) => !!entry && entry.state === 'needs' && entry.ts * 1000 > (seenMs || 0);
 
-module.exports = { classify, applyOrder, reorder, claudeEntryFor, claudeStateFor, isUnread };
+module.exports = { classify, applyOrder, reorder, claudeEntryFor, isUnread };

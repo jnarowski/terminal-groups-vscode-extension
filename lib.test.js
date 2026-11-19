@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert');
-const { classify, applyOrder, reorder, claudeStateFor, isUnread } = require('./lib');
+const { classify, applyOrder, reorder, claudeEntryFor, isUnread } = require('./lib');
 
 test('isUnread: needs state newer than last view', () => {
   assert.strictEqual(isUnread({ state: 'needs', ts: 100 }, undefined), true);
@@ -10,17 +10,17 @@ test('isUnread: needs state newer than last view', () => {
   assert.strictEqual(isUnread(undefined, undefined), false);
 });
 
-test('claudeStateFor picks the newest state whose ancestry includes the terminal pid', () => {
+test('claudeEntryFor picks the newest state whose ancestry includes the terminal pid', () => {
   const states = [
     { state: 'working', pids: [500, 400, 100], ts: 1 },
     { state: 'needs', pids: [510, 400, 100], ts: 2 },
     { state: 'working', pids: [700, 600, 100], ts: 3 },
   ];
-  assert.strictEqual(claudeStateFor(states, 400), 'needs');
-  assert.strictEqual(claudeStateFor(states, 600), 'working');
-  assert.strictEqual(claudeStateFor(states, 999), undefined);
-  assert.strictEqual(claudeStateFor([], 400), undefined);
-  assert.strictEqual(claudeStateFor(states, undefined), undefined);
+  assert.strictEqual(claudeEntryFor(states, 400)?.state, 'needs');
+  assert.strictEqual(claudeEntryFor(states, 600)?.state, 'working');
+  assert.strictEqual(claudeEntryFor(states, 999)?.state, undefined);
+  assert.strictEqual(claudeEntryFor([], 400)?.state, undefined);
+  assert.strictEqual(claudeEntryFor(states, undefined)?.state, undefined);
 });
 
 const R = '/Users/jp/metarepo';
