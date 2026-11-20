@@ -467,6 +467,10 @@ function activate(context) {
     cmd('terminalGroups.newInFolder', (group) => {
       if (group && group.type === 'group') vscode.window.createTerminal({ cwd: group.path || undefined }).show();
     }),
+    cmd('terminalGroups.newInAnyFolder', async () => {
+      const folder = await vscode.window.showWorkspaceFolderPick({ placeHolder: 'New terminal in which folder?' });
+      if (folder) vscode.window.createTerminal({ cwd: folder.uri.fsPath }).show();
+    }),
     cmd('terminalGroups.expandAll', async () => {
       for (const g of groups) await view.reveal(g, { expand: true, select: false, focus: false }).then(undefined, () => {});
     }),

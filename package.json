@@ -2,7 +2,7 @@
   "name": "terminal-groups",
   "displayName": "Terminal Groups",
   "description": "Terminal list grouped by workspace folder.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "jnarowski",
   "private": true,
   "license": "UNLICENSED",
@@ -52,6 +52,7 @@
       { "command": "terminalGroups.moveToEditor", "title": "Move into Editor Area" },
       { "command": "terminalGroups.split", "title": "Split Terminal" },
       { "command": "terminalGroups.newInFolder", "title": "New Terminal Here", "icon": "$(add)" },
+      { "command": "terminalGroups.newInAnyFolder", "title": "New Terminal in Folder...", "category": "Terminal Groups", "icon": "$(add)" },
       { "command": "terminalGroups.expandAll", "title": "Expand All", "icon": "$(expand-all)" },
       { "command": "terminalGroups.find", "title": "Terminal Groups: Find Terminal", "icon": "$(search)" },
       { "command": "terminalGroups.sortFolders", "title": "Sort Folders...", "icon": "$(list-ordered)" },
@@ -64,11 +65,13 @@
         { "command": "terminalGroups.filter", "when": "view == terminalGroups.tree && !terminalGroups.filtered", "group": "navigation@0" },
         { "command": "terminalGroups.filterActive", "when": "view == terminalGroups.tree && terminalGroups.filtered", "group": "navigation@0" },
         { "command": "terminalGroups.find", "when": "view == terminalGroups.tree", "group": "navigation@0" },
-        { "command": "terminalGroups.expandAll", "when": "view == terminalGroups.tree", "group": "navigation@1" }
+        { "command": "terminalGroups.newInAnyFolder", "when": "view == terminalGroups.tree", "group": "navigation@1" },
+        { "command": "terminalGroups.expandAll", "when": "view == terminalGroups.tree", "group": "navigation@2" }
       ],
       "view/item/context": [
         { "command": "terminalGroups.newInFolder", "when": "view == terminalGroups.tree && viewItem == group", "group": "inline" },
         { "command": "terminalGroups.newInFolder", "when": "view == terminalGroups.tree && viewItem == group", "group": "1_group@1" },
+        { "command": "terminalGroups.newInAnyFolder", "when": "view == terminalGroups.tree", "group": "0_new@1" },
         { "command": "terminalGroups.kill", "when": "view == terminalGroups.tree && viewItem == terminal", "group": "inline" },
         { "command": "terminalGroups.split", "when": "view == terminalGroups.tree && viewItem == terminal", "group": "1_terminal@1" },
         { "command": "terminalGroups.moveToEditor", "when": "view == terminalGroups.tree && viewItem == terminal", "group": "1_terminal@2" },
